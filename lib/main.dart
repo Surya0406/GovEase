@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SarkarScribe',
+      title: 'GovEase',
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.background, 
         colorScheme: ColorScheme.fromSeed(

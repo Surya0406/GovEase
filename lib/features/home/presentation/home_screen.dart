@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         titleSpacing: 24,
         title: Row(
           children: [
-            // Custom SarkarScribe Logo mark
+            // Custom GovEase Logo mark
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(width: 8),
             const Text(
-              'SarkarScribe',
+              'GovEase',
               style: TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,

@@ -25,13 +25,13 @@ class LoginScreen extends StatelessWidget {
                   Row(
                     children: [
                       const Icon(
-                        Icons.account_balance, // Placeholder logo for SarkarScribe
+                        Icons.account_balance, // Placeholder logo for GovEase
                         color: Colors.white,
                         size: 28,
                       ),
                       const SizedBox(width: 8),
                       const Text(
-                        'SarkarScribe',
+                        'GovEase',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24,

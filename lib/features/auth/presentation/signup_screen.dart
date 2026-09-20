@@ -77,7 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      'I agree to the Terms of Use and Privacy Policy. SarkarScribe never submits anything to a government portal on my behalf — it only teaches me how.',
+                      'I agree to the Terms of Use and Privacy Policy. GovEase never submits anything to a government portal on my behalf — it only teaches me how.',
                       style: TextStyle(
                         color: Colors.black54,
                         fontSize: 12,

@@ -3,7 +3,7 @@
     package="com.example.govease"
     tools:ignore="MissingVersion">
     <application
-        android:label="govease"
+        android:label="GovEase"
         android:name="android.app.Application"
         android:icon="@mipmap/ic_launcher">
         <activity
