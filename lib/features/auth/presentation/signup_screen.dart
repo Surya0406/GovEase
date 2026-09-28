@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../home/presentation/home_screen.dart';
+import '../../../core/database/database_helper.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -12,6 +12,72 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool _agreedToTerms = false;
+
+  // Controllers for text fields
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _mobileController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _handleRegister() async {
+    // Basic validation
+    if (_fullNameController.text.isEmpty ||
+        _mobileController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all required fields')),
+      );
+      return;
+    }
+
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    // Save to local database
+    final user = {
+      'fullName': _fullNameController.text.trim(),
+      'mobile': _mobileController.text.trim(),
+      'email': _emailController.text.trim(),
+      'password': _passwordController.text, // In a real app, hash the password!
+    };
+
+    try {
+      await DatabaseHelper().registerUser(user);
+      
+      if (!mounted) return;
+      
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Account created successfully! Please log in.')),
+      );
+
+      // Redirect back to Login Screen instead of Home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to create account. Try again.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +116,11 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const SizedBox(height: 24),
               
-              _buildLabelAndField('Full name', 'As per your ID'),
-              _buildLabelAndField('Mobile number', '98765 43210', keyboardType: TextInputType.phone),
-              _buildLabelAndField('Email (optional)', 'you@example.com', keyboardType: TextInputType.emailAddress),
-              _buildLabelAndField('Password', 'At least 8 characters', obscureText: true),
-              _buildLabelAndField('Confirm password', 'Repeat password', obscureText: true),
+              _buildLabelAndField('Full name', 'As per your ID', controller: _fullNameController),
+              _buildLabelAndField('Mobile number', '98765 43210', keyboardType: TextInputType.phone, controller: _mobileController),
+              _buildLabelAndField('Email (optional)', 'you@example.com', keyboardType: TextInputType.emailAddress, controller: _emailController),
+              _buildLabelAndField('Password', 'At least 8 characters', obscureText: true, controller: _passwordController),
+              _buildLabelAndField('Confirm password', 'Repeat password', obscureText: true, controller: _confirmPasswordController),
               
               const SizedBox(height: 8),
               Row(
@@ -90,13 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 32),
               
               ElevatedButton(
-                onPressed: _agreedToTerms ? () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (route) => false,
-                  );
-                } : null,
+                onPressed: _agreedToTerms ? _handleRegister : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade700,
                   foregroundColor: Colors.white,
@@ -151,6 +211,7 @@ class _SignupScreenState extends State<SignupScreen> {
     String hint, {
     bool obscureText = false,
     TextInputType? keyboardType,
+    TextEditingController? controller,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -167,6 +228,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
           const SizedBox(height: 8),
           TextFormField(
+            controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
             decoration: InputDecoration(

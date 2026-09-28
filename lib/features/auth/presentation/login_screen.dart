@@ -1,10 +1,55 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/database/database_helper.dart';
 import '../../home/presentation/home_screen.dart';
 import 'signup_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _identifierController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _identifierController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() async {
+    final identifier = _identifierController.text.trim();
+    final password = _passwordController.text;
+
+    if (identifier.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter your mobile/email and password')),
+      );
+      return;
+    }
+
+    final user = await DatabaseHelper().loginUser(identifier, password);
+
+    if (!mounted) return;
+
+    if (user != null) {
+      // Login successful!
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      // Login failed
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid credentials. Please try again.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +142,7 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         // Mobile number or email Field
                         TextFormField(
+                          controller: _identifierController,
                           decoration: InputDecoration(
                             hintText: '98765 43210',
                             hintStyle: const TextStyle(color: Colors.black38),
@@ -130,6 +176,7 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(height: 8),
                         // Password Field
                         TextFormField(
+                          controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             hintText: '••••••••',
@@ -169,12 +216,7 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         // Log in Button
                         ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomeScreen()),
-                            );
-                          },
+                          onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue.shade700,
                             foregroundColor: Colors.white,
