@@ -23,10 +23,12 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'govease.db');
     return await openDatabase(
       path,
-      version: 2, // Version 2 triggers schema migration
+      version: 3, // Version 3 adds vault_documents table
       onCreate: _onCreate,
       onUpgrade: (db, oldVersion, newVersion) async {
-        await db.execute('DROP TABLE IF EXISTS users');
+        if (oldVersion < 2) {
+          await db.execute('DROP TABLE IF EXISTS users');
+        }
         await _onCreate(db, newVersion);
       },
     );
@@ -40,6 +42,23 @@ class DatabaseHelper {
         mobile TEXT UNIQUE NOT NULL,
         email TEXT,
         password TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS vault_documents(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        doc_id TEXT UNIQUE NOT NULL,
+        owner_id TEXT NOT NULL,
+        display_name TEXT NOT NULL,
+        file_category TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        file_extension TEXT NOT NULL,
+        encrypted_file_path TEXT NOT NULL,
+        file_size INTEGER NOT NULL,
+        sha256_hash TEXT NOT NULL,
+        iv_base64 TEXT NOT NULL,
+        created_at TEXT NOT NULL
       )
     ''');
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../profile/presentation/profile_screen.dart';
 import '../../scribes/data/scribe_data.dart';
 import '../../scribes/presentation/scribe_detail_screen.dart';
+import '../../vault/presentation/vault_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,87 +17,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        titleSpacing: 24,
-        title: Row(
-          children: [
-            // Custom GovEase Logo mark
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade700,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'स',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'GovEase',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Choose a scribe',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Guided walkthroughs of real government portals — practice before you file for real.',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 15,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
-              
-              // List of Scribes
-              _buildScribeCard(
-                context,
-                scribe: sampleScribes[0], // Aadhaar Enrolment
-              ),
-              _buildScribeCard(
-                context,
-                scribe: sampleScribes[1], // PAN Card Application
-              ),
-              _buildScribeCard(
-                context,
-                scribe: sampleScribes[2], // Voter ID Registration
-              ),
-              _buildScribeCard(
-                context,
-                scribe: sampleScribes[3], // Driving Licence (Learner's)
-              ),
-            ],
-          ),
-        ),
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          _buildScribesTab(context, isDark),
+          _buildProgressTab(context, isDark),
+          const ProfileScreen(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -105,8 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         selectedItemColor: Colors.blue.shade700,
-        unselectedItemColor: Colors.grey.shade400,
-        backgroundColor: Colors.white,
+        unselectedItemColor: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+        backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
         elevation: 16,
         type: BottomNavigationBarType.fixed,
         items: const [
@@ -127,9 +59,140 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildScribesTab(BuildContext context, bool isDark) {
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      appBar: AppBar(
+        backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        elevation: 0,
+        titleSpacing: 24,
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade700,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'स',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'GovEase',
+              style: TextStyle(
+                color: isDark ? Colors.white : AppColors.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Choose a scribe',
+                style: TextStyle(
+                  color: isDark ? Colors.white : AppColors.primary,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Guided walkthroughs of real government portals — practice before you file for real.',
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.black54,
+                  fontSize: 15,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              _buildScribeCard(context, scribe: sampleScribes[0], isDark: isDark),
+              _buildScribeCard(context, scribe: sampleScribes[1], isDark: isDark),
+              _buildScribeCard(context, scribe: sampleScribes[2], isDark: isDark),
+              _buildScribeCard(context, scribe: sampleScribes[3], isDark: isDark),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressTab(BuildContext context, bool isDark) {
+    return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      appBar: AppBar(
+        title: const Text('Learning Progress', style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 0,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(24.0),
+        children: [
+          Card(
+            color: isDark ? AppColors.darkCard : Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Overall Scribe Practice', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('2 / 4 Completed', style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: 0.5,
+                      minHeight: 10,
+                      backgroundColor: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            color: isDark ? AppColors.darkCard : Colors.white,
+            child: ListTile(
+              leading: Icon(Icons.shield_outlined, color: Colors.blue.shade700, size: 32),
+              title: const Text('Secure Local Document Vault', style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: const Text('Store and view your encrypted government records offline.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const VaultScreen()),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildScribeCard(
     BuildContext context, {
     required Scribe scribe,
+    required bool isDark,
   }) {
     return InkWell(
       onTap: () {
@@ -144,16 +207,15 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? AppColors.darkCard : Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         padding: const EdgeInsets.all(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Left Icon
             Container(
-              width: 24,
+              width: 32,
               height: 48,
               decoration: BoxDecoration(
                 color: Colors.blue.shade700,
@@ -170,7 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(width: 16),
-            // Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,8 +242,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: Text(
                           scribe.title,
-                          style: const TextStyle(
-                            color: AppColors.primary,
+                          style: TextStyle(
+                            color: isDark ? Colors.white : AppColors.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -197,20 +258,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 2),
                   Text(
                     scribe.subtitle,
-                    style: const TextStyle(
-                      color: Colors.black45,
+                    style: TextStyle(
+                      color: isDark ? Colors.white70 : Colors.black45,
                       fontSize: 13,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Tags
                   Row(
                     children: [
-                      _buildTag(scribe.stepsCount),
+                      _buildTag(scribe.stepsCount, isDark),
                       const SizedBox(width: 8),
-                      _buildTag(scribe.duration),
+                      _buildTag(scribe.duration, isDark),
                       const SizedBox(width: 8),
-                      _buildTag(scribe.level),
+                      _buildTag(scribe.level, isDark),
                     ],
                   ),
                 ],
@@ -222,11 +282,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTag(String text) {
+  Widget _buildTag(String text, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.lightBlue.shade50,
+        color: isDark ? AppColors.darkBackground : Colors.lightBlue.shade50,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

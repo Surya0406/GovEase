@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/database/database_helper.dart';
+import '../../../core/session/session_manager.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../home/presentation/home_screen.dart';
 import 'signup_screen.dart';
 
@@ -38,17 +39,41 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (user != null) {
-      // Login successful!
+      await SessionManager.instance.saveUserSession(
+        fullName: user['fullName'] ?? 'GovEase User',
+        mobile: user['mobile'] ?? identifier,
+        email: user['email'] ?? '',
+      );
+
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } else {
-      // Login failed
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid credentials. Please try again.')),
       );
     }
+  }
+
+  void _handleAadhaarOtp() async {
+    final identifier = _identifierController.text.trim();
+    final mobile = identifier.isNotEmpty ? identifier : '9876543210';
+
+    await SessionManager.instance.saveUserSession(
+      fullName: 'Aadhaar Verified User',
+      mobile: mobile,
+      email: '',
+    );
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   @override
@@ -56,21 +81,19 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SafeArea(
-        bottom: false, // Let the bottom white container extend to the bottom edge
+        bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo and Title Row
                   Row(
                     children: [
                       const Icon(
-                        Icons.account_balance, // Placeholder logo for GovEase
+                        Icons.account_balance,
                         color: Colors.white,
                         size: 28,
                       ),
@@ -86,7 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  // Small Cyan Caps Text
                   const Text(
                     'WELCOME BACK',
                     style: TextStyle(
@@ -97,7 +119,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Large White Heading
                   const Text(
                     'Know government services,\nstep by step.',
                     style: TextStyle(
@@ -111,7 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            // Bottom Section
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -124,13 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  // Wrapping with SingleChildScrollView prevents pixel overflow when the keyboard opens
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-                        // Mobile number or email Label
                         const Text(
                           'Mobile number or email',
                           style: TextStyle(
@@ -140,7 +158,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        // Mobile number or email Field
                         TextFormField(
                           controller: _identifierController,
                           decoration: InputDecoration(
@@ -164,7 +181,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // Password Label
                         const Text(
                           'Password',
                           style: TextStyle(
@@ -174,7 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        // Password Field
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
@@ -199,7 +214,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        // Forgot password?
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
@@ -214,13 +228,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Log in Button
                         ElevatedButton(
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue.shade700,
                             foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(52), // Full width
+                            minimumSize: const Size.fromHeight(52),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -232,18 +245,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Continue with Aadhaar OTP Button
                         OutlinedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomeScreen()),
-                            );
-                          },
+                          onPressed: _handleAadhaarOtp,
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade50, // Light blue fill
+                            backgroundColor: Colors.blue.shade50,
                             side: BorderSide(color: Colors.blue.shade200),
-                            minimumSize: const Size.fromHeight(52), // Full width
+                            minimumSize: const Size.fromHeight(52),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -258,7 +265,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 32),
-                        // New here? Create an account
                         Center(
                           child: GestureDetector(
                             onTap: () {
