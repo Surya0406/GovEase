@@ -31,17 +31,20 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _handleRegister() async {
+    final fullName = _fullNameController.text.trim();
+    final mobile = _mobileController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
     // Basic validation
-    if (_fullNameController.text.isEmpty ||
-        _mobileController.text.isEmpty ||
-        _passwordController.text.isEmpty) {
+    if (fullName.isEmpty || mobile.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill all required fields')),
       );
       return;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
+    if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
@@ -50,10 +53,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
     // Save to local database
     final user = {
-      'fullName': _fullNameController.text.trim(),
-      'mobile': _mobileController.text.trim(),
+      'fullName': fullName,
+      'mobile': mobile,
       'email': _emailController.text.trim(),
-      'password': _passwordController.text, // In a real app, hash the password!
+      'password': password,
     };
 
     try {
@@ -63,18 +66,25 @@ class _SignupScreenState extends State<SignupScreen> {
       
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account created successfully! Please log in.')),
+        const SnackBar(
+          content: Text('Account created successfully! Please log in.'),
+          backgroundColor: Colors.green,
+        ),
       );
 
-      // Redirect back to Login Screen instead of Home
+      // Redirect back to Login Screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     } catch (e) {
       if (!mounted) return;
+      final msg = e.toString().replaceAll('Exception: ', '');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create account. Try again.')),
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }

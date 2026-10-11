@@ -234,7 +234,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 16),
                         // Continue with Aadhaar OTP Button
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            );
+                          },
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.blue.shade50, // Light blue fill
                             side: BorderSide(color: Colors.blue.shade200),

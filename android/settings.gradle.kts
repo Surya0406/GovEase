@@ -1,3 +1,18 @@
+try {
+    val processEnv = Class.forName("java.lang.ProcessEnvironment")
+
+    val envField = processEnv.getDeclaredField("theEnvironment")
+    envField.isAccessible = true
+    val envMap = envField.get(null) as? MutableMap<*, *>
+    envMap?.keys?.removeIf { k -> k.toString().equals("ANDROID_PREFS_ROOT", ignoreCase = true) }
+
+    val ciEnvField = processEnv.getDeclaredField("theCaseInsensitiveEnvironment")
+    ciEnvField.isAccessible = true
+    val ciEnvMap = ciEnvField.get(null) as? MutableMap<*, *>
+    ciEnvMap?.keys?.removeIf { k -> k.toString().equals("ANDROID_PREFS_ROOT", ignoreCase = true) }
+} catch (_: Exception) {
+}
+
 pluginManagement {
     val flutterSdkPath =
         run {
