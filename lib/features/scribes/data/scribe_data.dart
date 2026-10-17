@@ -48,7 +48,7 @@ final sampleScribes = [
     title: 'Aadhaar Enrolment',
     subtitle: 'UIDAI',
     iconLetter: 'अ',
-    stepsCount: '7 steps',
+    stepsCount: '6 steps',
     duration: '12 min',
     level: 'Beginner',
     overviewDescription:
@@ -93,15 +93,9 @@ final sampleScribes = [
       ScribeStep(
         stepNumber: 6,
         title: 'Fill Details & Search Centre',
-        description: "Select Resident type, Age category, and 'New Enrolment'. Then, search for an Aadhaar Seva Kendra using your Pincode.",
+        description: "Select Resident type, Age category, and 'New Enrolment'. Then, search for an Aadhaar Seva Kendra. After choosing the location, date, and time, a confirmation will be sent.",
         url: 'uidai.gov.in/appointments-search',
         imagePath: 'assets/images/scribes/aadhaar/step6.png',
-      ),
-      ScribeStep(
-        stepNumber: 7,
-        title: 'Download confirmation',
-        description: "Save the appointment slip — you'll need it and your documents at the centre.",
-        url: 'uidai.gov.in',
       ),
     ],
   ),
