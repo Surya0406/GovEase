@@ -160,7 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _identifierController,
-                          style: const TextStyle(color: Colors.black87), // Fix white text issue
                           decoration: InputDecoration(
                             hintText: '98765 43210',
                             hintStyle: const TextStyle(color: Colors.black38),
