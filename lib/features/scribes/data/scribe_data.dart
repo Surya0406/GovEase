@@ -4,6 +4,7 @@ class ScribeStep {
   final String description;
   final String url;
   final String? tipText;
+  final String? imagePath;
 
   const ScribeStep({
     required this.stepNumber,
@@ -11,6 +12,7 @@ class ScribeStep {
     required this.description,
     this.url = 'uidai.gov.in',
     this.tipText,
+    this.imagePath,
   });
 }
 
@@ -54,40 +56,40 @@ final sampleScribes = [
     steps: const [
       ScribeStep(
         stepNumber: 1,
-        title: 'Open the UIDAI portal',
-        description: 'Go to uidai.gov.in on your browser.',
-        url: 'uidai.gov.in',
+        title: 'Search UIDAI',
+        description: 'Search for "uidai aadhaar" on Google and click on the official link (https://uidai.gov.in).',
+        url: 'google.com',
         tipText: 'This is the official government site — check the URL carefully.',
       ),
       ScribeStep(
         stepNumber: 2,
         title: "Find 'Book an Appointment'",
-        description: "It sits under the 'My Aadhaar' menu on the homepage.",
+        description: "Hover over the 'My Aadhaar' menu on the homepage and click 'Book an Appointment'.",
         url: 'uidai.gov.in',
       ),
       ScribeStep(
         stepNumber: 3,
-        title: 'Choose your city',
-        description: 'Select the state and city where your nearest Aadhaar Seva Kendra is.',
-        url: 'uidai.gov.in',
+        title: 'Login to Appointment Portal',
+        description: 'Enter your Mobile Number or Email ID and the Captcha code shown on the screen.',
+        url: 'uidai.gov.in/appointments',
       ),
       ScribeStep(
         stepNumber: 4,
-        title: 'Pick a service',
-        description: "Choose 'New Aadhaar' if enrolling for the first time, or 'Update Aadhaar' otherwise.",
-        url: 'uidai.gov.in',
+        title: 'Verify with OTP',
+        description: "Click 'Send OTP', then enter the OTP received on your mobile/email and click 'Authenticate with OTP'.",
+        url: 'uidai.gov.in/otp-verify',
       ),
       ScribeStep(
         stepNumber: 5,
-        title: 'Verify with OTP',
-        description: 'Enter your mobile number and the OTP sent to it to continue.',
-        url: 'uidai.gov.in',
+        title: 'Select Appointment Type',
+        description: "On the Appointment Portal home page, click on 'Centre Appointment' for new enrolment or update services.",
+        url: 'uidai.gov.in/appointments-home',
       ),
       ScribeStep(
         stepNumber: 6,
-        title: 'Select date & slot',
-        description: 'Pick an available date and time at your chosen centre.',
-        url: 'uidai.gov.in',
+        title: 'Fill Details & Search Centre',
+        description: "Select Resident type, Age category, and 'New Enrolment'. Then, search for an Aadhaar Seva Kendra using your Pincode.",
+        url: 'uidai.gov.in/appointments-search',
       ),
       ScribeStep(
         stepNumber: 7,

@@ -285,52 +285,64 @@ class _ScribeWalkthroughScreenState extends State<ScribeWalkthroughScreen> {
             height: 180,
             child: Stack(
               children: [
-                // Wireframe skeleton
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(4),
+                // Image or Wireframe
+                if (step.imagePath != null)
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(
+                        step.imagePath!,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: 180,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Dashed Highlight Box
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.blue.shade300,
-                          style: BorderStyle.solid,
-                          width: 1.5,
+                  )
+                else
+                  // Wireframe skeleton
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 180,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade100,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Dashed Highlight Box
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blue.shade300,
+                            style: BorderStyle.solid,
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ],
+                  ),
 
                 // Step Number Badge
                 Positioned(
