@@ -241,6 +241,7 @@ class _SignupScreenState extends State<SignupScreen> {
             controller: controller,
             obscureText: obscureText,
             keyboardType: keyboardType,
+            style: const TextStyle(color: Colors.black87), // Fix white text issue
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: const TextStyle(color: Colors.black38),
