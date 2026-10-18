@@ -19,6 +19,7 @@ class ScribeDetailScreen extends StatelessWidget {
         children: [
           // Header Section (Dark Blue)
           Container(
+            width: double.infinity, // Ensures the dark blue background extends to both edges
             color: AppColors.primary,
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top + 12,
