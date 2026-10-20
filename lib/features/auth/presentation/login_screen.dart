@@ -58,24 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _handleAadhaarOtp() async {
-    final identifier = _identifierController.text.trim();
-    final mobile = identifier.isNotEmpty ? identifier : '9876543210';
-
-    await SessionManager.instance.saveUserSession(
-      fullName: 'Aadhaar Verified User',
-      mobile: mobile,
-      email: '',
-    );
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 8),
                         TextFormField(
                           controller: _identifierController,
-                          style: const TextStyle(color: Colors.black87), // Fix white text issue
+                          style: const TextStyle(color: Colors.black87),
                           decoration: InputDecoration(
                             hintText: '98765 43210',
                             hintStyle: const TextStyle(color: Colors.black38),
@@ -175,9 +157,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(color: Colors.grey.shade300),
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                             ),
                           ),
                         ),
@@ -194,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
-                          style: const TextStyle(color: Colors.black87), // Fix white text issue
+                          style: const TextStyle(color: Colors.black87),
                           decoration: InputDecoration(
                             hintText: '••••••••',
                             hintStyle: const TextStyle(color: Colors.black38),
@@ -209,9 +191,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(color: Colors.grey.shade300),
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(12)),
-                              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
                             ),
                           ),
                         ),
@@ -229,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
@@ -244,26 +226,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Log in',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        OutlinedButton(
-                          onPressed: _handleAadhaarOtp,
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade50,
-                            side: BorderSide(color: Colors.blue.shade200),
-                            minimumSize: const Size.fromHeight(52),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Text(
-                            'Continue with Aadhaar OTP',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue.shade700,
-                            ),
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -292,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
                       ],
                     ),
                   ),
