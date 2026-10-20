@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../../features/tracker/domain/application_record_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -23,7 +24,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'govease.db');
     return await openDatabase(
       path,
-      version: 3, // Version 3 adds vault_documents table
+      version: 4, // Version 4 adds application_tracker & status_history tables
       onCreate: _onCreate,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -59,6 +60,32 @@ class DatabaseHelper {
         sha256_hash TEXT NOT NULL,
         iv_base64 TEXT NOT NULL,
         created_at TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS application_tracker(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        track_id TEXT UNIQUE NOT NULL,
+        owner_id TEXT NOT NULL,
+        service_name TEXT NOT NULL,
+        department TEXT NOT NULL,
+        ref_number TEXT,
+        date_submitted TEXT NOT NULL,
+        current_status TEXT NOT NULL,
+        notes TEXT,
+        created_at TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS status_history(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        track_id TEXT NOT NULL,
+        owner_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        notes TEXT,
+        changed_at TEXT NOT NULL
       )
     ''');
   }
@@ -109,5 +136,108 @@ class DatabaseHelper {
       return results.first;
     }
     return null;
+  }
+
+  // Application Tracker CRUD
+  Future<void> createTrackingRecord(ApplicationRecordModel record) async {
+    Database db = await database;
+    await db.insert('application_tracker', record.toMap());
+
+    // Insert initial status history entry
+    final history = StatusHistoryModel(
+      trackId: record.trackId,
+      ownerId: record.ownerId,
+      status: record.currentStatus,
+      notes: record.notes ?? 'Application record created.',
+      changedAt: record.createdAt,
+    );
+    await db.insert('status_history', history.toMap());
+  }
+
+  Future<List<ApplicationRecordModel>> getTrackingRecordsForOwner(String ownerId) async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'application_tracker',
+      where: 'owner_id = ?',
+      whereArgs: [ownerId],
+      orderBy: 'created_at DESC',
+    );
+    return results.map((m) => ApplicationRecordModel.fromMap(m)).toList();
+  }
+
+  Future<List<StatusHistoryModel>> getStatusHistoryForTrackId(String ownerId, String trackId) async {
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'status_history',
+      where: 'owner_id = ? AND track_id = ?',
+      whereArgs: [ownerId, trackId],
+      orderBy: 'changed_at DESC',
+    );
+    return results.map((m) => StatusHistoryModel.fromMap(m)).toList();
+  }
+
+  Future<void> updateTrackingStatus({
+    required String ownerId,
+    required String trackId,
+    required String newStatus,
+    String? notes,
+  }) async {
+    Database db = await database;
+    final now = DateTime.now().toIso8601String();
+
+    await db.update(
+      'application_tracker',
+      {'current_status': newStatus},
+      where: 'owner_id = ? AND track_id = ?',
+      whereArgs: [ownerId, trackId],
+    );
+
+    final history = StatusHistoryModel(
+      trackId: trackId,
+      ownerId: ownerId,
+      status: newStatus,
+      notes: notes,
+      changedAt: now,
+    );
+    await db.insert('status_history', history.toMap());
+  }
+
+  Future<void> editTrackingRecord({
+    required String ownerId,
+    required String trackId,
+    required String serviceName,
+    required String department,
+    String? refNumber,
+    String? notes,
+  }) async {
+    Database db = await database;
+    await db.update(
+      'application_tracker',
+      {
+        'service_name': serviceName.trim(),
+        'department': department.trim(),
+        'ref_number': refNumber?.trim(),
+        'notes': notes?.trim(),
+      },
+      where: 'owner_id = ? AND track_id = ?',
+      whereArgs: [ownerId, trackId],
+    );
+  }
+
+  Future<void> deleteTrackingRecord({
+    required String ownerId,
+    required String trackId,
+  }) async {
+    Database db = await database;
+    await db.delete(
+      'application_tracker',
+      where: 'owner_id = ? AND track_id = ?',
+      whereArgs: [ownerId, trackId],
+    );
+    await db.delete(
+      'status_history',
+      where: 'owner_id = ? AND track_id = ?',
+      whereArgs: [ownerId, trackId],
+    );
   }
 }
