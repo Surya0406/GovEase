@@ -345,7 +345,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Overall Scribe Practice', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      const Expanded(child: Text('Overall Scribe Practice', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                      const SizedBox(width: 8),
                       Text('2 / 4 Completed', style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold)),
                     ],
                   ),
@@ -392,10 +393,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Application Tracker',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              const Expanded(
+                child: Text(
+                  'Application Tracker',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
+              const SizedBox(width: 8),
               ElevatedButton.icon(
                 onPressed: _showAddApplicationDialog,
                 style: ElevatedButton.styleFrom(
@@ -412,15 +416,23 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 12),
 
           // Tracker Summary Metrics Grid
-          Row(
+          Column(
             children: [
-              _metricCard('Total', '$totalCount', Colors.blue, isDark),
-              const SizedBox(width: 8),
-              _metricCard('In Progress', '$inProgressCount', Colors.orange, isDark),
-              const SizedBox(width: 8),
-              _metricCard('Completed', '$completedCount', Colors.green, isDark),
-              const SizedBox(width: 8),
-              _metricCard('Action Req.', '$actionRequiredCount', Colors.red, isDark),
+              Row(
+                children: [
+                  _metricCard('Total', '$totalCount', Colors.blue, isDark),
+                  const SizedBox(width: 8),
+                  _metricCard('In Progress', '$inProgressCount', Colors.orange, isDark),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _metricCard('Completed', '$completedCount', Colors.green, isDark),
+                  const SizedBox(width: 8),
+                  _metricCard('Action Req.', '$actionRequiredCount', Colors.red, isDark),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -487,42 +499,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(bottom: 12.0),
                           color: isDark ? AppColors.darkCard : Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            title: Text(
-                              item.serviceName,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 4.0),
-                              child: Text(
-                                '${item.department} • ID: ${item.trackId}${item.refNumber != null ? ' • Ref: ${item.refNumber}' : ''}',
-                                style: const TextStyle(fontSize: 12, color: Colors.grey),
-                              ),
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: statusColor.withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: statusColor),
-                                  ),
-                                  child: Text(
-                                    item.currentStatus,
-                                    style: TextStyle(color: statusColor, fontSize: 11, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  item.dateSubmitted,
-                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
-                                ),
-                              ],
-                            ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
                             onTap: () async {
                               final updated = await Navigator.push<bool>(
                                 context,
@@ -534,6 +512,53 @@ class _HomeScreenState extends State<HomeScreen> {
                                 _loadTrackingRecords();
                               }
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.serviceName,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${item.department} • ID: ${item.trackId}${item.refNumber != null ? ' • Ref: ${item.refNumber}' : ''}',
+                                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: statusColor.withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(color: statusColor),
+                                        ),
+                                        child: Text(
+                                          item.currentStatus,
+                                          style: TextStyle(color: statusColor, fontSize: 11, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        item.dateSubmitted,
+                                        style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -645,12 +670,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Row(
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
                     children: [
                       _buildTag(scribe.stepsCount, isDark),
-                      const SizedBox(width: 8),
                       _buildTag(scribe.duration, isDark),
-                      const SizedBox(width: 8),
                       _buildTag(scribe.level, isDark),
                     ],
                   ),

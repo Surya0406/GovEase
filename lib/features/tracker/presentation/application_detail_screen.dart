@@ -467,11 +467,15 @@ class _ApplicationDetailScreenState extends State<ApplicationDetailScreen> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        item.status,
-                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color),
+                                      Expanded(
+                                        child: Text(
+                                          item.status,
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color),
+                                        ),
                                       ),
+                                      const SizedBox(width: 8),
                                       Text(
                                         formattedDate,
                                         style: const TextStyle(fontSize: 12, color: Colors.grey),
@@ -504,8 +508,10 @@ class _ApplicationDetailScreenState extends State<ApplicationDetailScreen> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+          Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 13))),
+          const SizedBox(width: 16),
           Flexible(
             child: Text(
               value,

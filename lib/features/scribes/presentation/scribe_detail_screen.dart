@@ -67,12 +67,12 @@ class ScribeDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Tags Row
-                  Row(
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
                     children: [
                       _buildTag(scribe.stepsCount),
-                      const SizedBox(width: 8),
                       _buildTag(scribe.duration),
-                      const SizedBox(width: 8),
                       _buildTag(scribe.level),
                     ],
                   ),

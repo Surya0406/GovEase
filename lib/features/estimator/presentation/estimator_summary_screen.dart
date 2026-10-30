@@ -96,12 +96,15 @@ class _EstimatorSummaryScreenState extends State<EstimatorSummaryScreen> {
                     ),
                     const SizedBox(height: 12),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Icon(Icons.source, size: 14, color: Colors.grey),
                         const SizedBox(width: 4),
-                        Text(
-                          'Source: ${_data.officialSource} • Updated ${_data.lastUpdatedDate}',
-                          style: const TextStyle(fontSize: 11, color: Colors.grey),
+                        Expanded(
+                          child: Text(
+                            'Source: ${_data.officialSource} • Updated ${_data.lastUpdatedDate}',
+                            style: const TextStyle(fontSize: 11, color: Colors.grey),
+                          ),
                         ),
                       ],
                     ),
@@ -168,7 +171,8 @@ class _EstimatorSummaryScreenState extends State<EstimatorSummaryScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Assessment Outcome:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Flexible(child: Text('Assessment Outcome:', style: TextStyle(fontWeight: FontWeight.bold))),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
@@ -211,17 +215,24 @@ class _EstimatorSummaryScreenState extends State<EstimatorSummaryScreen> {
                     const Divider(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
-                          children: [
-                            Icon(Icons.timer_outlined, color: Colors.blue),
-                            SizedBox(width: 8),
-                            Text('Estimated Duration', style: TextStyle(fontWeight: FontWeight.w600)),
-                          ],
+                        const Expanded(
+                          child: Row(
+                            children: [
+                              Icon(Icons.timer_outlined, color: Colors.blue),
+                              SizedBox(width: 8),
+                              Flexible(child: Text('Estimated Duration', style: TextStyle(fontWeight: FontWeight.w600))),
+                            ],
+                          ),
                         ),
-                        Text(
-                          _data.processingTime,
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                        const SizedBox(width: 12),
+                        Flexible(
+                          child: Text(
+                            _data.processingTime,
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade700),
+                            textAlign: TextAlign.right,
+                          ),
                         ),
                       ],
                     ),
@@ -235,7 +246,8 @@ class _EstimatorSummaryScreenState extends State<EstimatorSummaryScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('3. Required Document Checklist', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Expanded(child: Text('3. Required Document Checklist', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+                const SizedBox(width: 8),
                 Text(
                   '${_availableDocs.values.where((v) => v).length} / ${_data.requiredDocuments.length} Ready',
                   style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold, fontSize: 12),
@@ -296,9 +308,17 @@ class _EstimatorSummaryScreenState extends State<EstimatorSummaryScreen> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.normal, fontSize: isBold ? 15 : 13)),
-          Text(value, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.w600, color: isBold ? Colors.blue.shade700 : null)),
+          Expanded(child: Text(label, style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.normal, fontSize: isBold ? 15 : 13))),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(fontWeight: isBold ? FontWeight.bold : FontWeight.w600, color: isBold ? Colors.blue.shade700 : null),
+              textAlign: TextAlign.right,
+            ),
+          ),
         ],
       ),
     );

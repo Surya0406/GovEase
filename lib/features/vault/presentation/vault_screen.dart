@@ -379,7 +379,9 @@ class _VaultScreenState extends State<VaultScreen> {
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4.0),
-          child: Row(
+          child: Wrap(
+            spacing: 8.0,
+            runSpacing: 4.0,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -392,7 +394,6 @@ class _VaultScreenState extends State<VaultScreen> {
                   style: TextStyle(fontSize: 10, color: Colors.blue.shade800, fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(width: 8),
               Text(
                 '$ext • $sizeMb MB',
                 style: const TextStyle(fontSize: 12, color: Colors.grey),

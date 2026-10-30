@@ -142,13 +142,20 @@ class _ScribeWalkthroughScreenState extends State<ScribeWalkthroughScreen> {
                   const SizedBox(width: 8),
 
                   // Language Switcher Chips
-                  _langChip('English', 'en', currentLang),
-                  const SizedBox(width: 4),
-                  _langChip('हिंदी', 'hi', currentLang),
-                  const SizedBox(width: 4),
-                  _langChip('தமிழ்', 'ta', currentLang),
-
-                  const Spacer(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _langChip('English', 'en', currentLang),
+                          const SizedBox(width: 4),
+                          _langChip('हिंदी', 'hi', currentLang),
+                          const SizedBox(width: 4),
+                          _langChip('தமிழ்', 'ta', currentLang),
+                        ],
+                      ),
+                    ),
+                  ),
 
                   // Audio Control Buttons
                   if (voiceService.ttsState == TtsState.playing)
