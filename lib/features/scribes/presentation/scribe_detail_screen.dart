@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../estimator/presentation/estimator_summary_screen.dart';
 import '../data/scribe_data.dart';
 import 'scribe_walkthrough_screen.dart';
 
@@ -19,7 +20,7 @@ class ScribeDetailScreen extends StatelessWidget {
         children: [
           // Header Section (Dark Blue)
           Container(
-            width: double.infinity, // Ensures the dark blue background extends to both edges
+            width: double.infinity,
             color: AppColors.primary,
             padding: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top + 12,
@@ -152,31 +153,54 @@ class ScribeDetailScreen extends StatelessWidget {
             ),
           ),
           
-          // Bottom Start Button
+          // Bottom Action Buttons
           Padding(
             padding: const EdgeInsets.all(24.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ScribeWalkthroughScreen(scribe: scribe),
+            child: Column(
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EstimatorSummaryScreen(scribe: scribe),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.blue.shade700,
+                    side: BorderSide(color: Colors.blue.shade200),
+                    minimumSize: const Size.fromHeight(48),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade700,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(52),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  icon: const Icon(Icons.calculate_outlined),
+                  label: const Text('Check Fee & Eligibility First', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
-              ),
-              child: const Text(
-                'Start scribe',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ScribeWalkthroughScreen(scribe: scribe),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(52),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Start scribe',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

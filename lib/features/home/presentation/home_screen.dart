@@ -28,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
     'Submitted',
     'Draft',
     'Under Review',
+    'Document Verification',
+    'Processing',
     'Action Required',
     'Approved',
     'Rejected',
@@ -152,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (confirm != true) return;
 
     final ownerId = SessionManager.instance.currentUserOwnerId;
-    final trackId = 'TRK_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(999)}';
+    final randomNum = Random().nextInt(8999) + 1000;
+    final trackId = 'GE-2026-$randomNum';
     final now = DateTime.now().toIso8601String();
 
     final record = ApplicationRecordModel(
@@ -171,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Application record saved to local tracker!'), backgroundColor: Colors.green),
+      SnackBar(content: Text('Application record saved with GovEase ID: $trackId'), backgroundColor: Colors.green),
     );
 
     _loadTrackingRecords();
@@ -183,6 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'Completed':
         return Colors.green.shade700;
       case 'Under Review':
+      case 'Document Verification':
+      case 'Processing':
         return Colors.orange.shade800;
       case 'Action Required':
         return Colors.red.shade700;
@@ -315,6 +320,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildProgressTab(BuildContext context, bool isDark) {
+    final totalCount = _trackingRecords.length;
+    final inProgressCount = _trackingRecords.where((r) => ['Submitted', 'Draft', 'Under Review', 'Document Verification', 'Processing'].contains(r.currentStatus)).length;
+    final completedCount = _trackingRecords.where((r) => ['Approved', 'Completed'].contains(r.currentStatus)).length;
+    final actionRequiredCount = _trackingRecords.where((r) => ['Action Required', 'Rejected', 'On Hold'].contains(r.currentStatus)).length;
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
@@ -399,7 +409,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
+
+          // Tracker Summary Metrics Grid
+          Row(
+            children: [
+              _metricCard('Total', '$totalCount', Colors.blue, isDark),
+              const SizedBox(width: 8),
+              _metricCard('In Progress', '$inProgressCount', Colors.orange, isDark),
+              const SizedBox(width: 8),
+              _metricCard('Completed', '$completedCount', Colors.green, isDark),
+              const SizedBox(width: 8),
+              _metricCard('Action Req.', '$actionRequiredCount', Colors.red, isDark),
+            ],
+          ),
+          const SizedBox(height: 12),
 
           // Demo Notice Banner
           Container(
@@ -415,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Demo Tracking: Records and status updates are managed locally for user tracking and practice.',
+                    'Demo Tracking: Statuses are user-updated locally for record-keeping and practice.',
                     style: TextStyle(fontSize: 12, color: Colors.amber.shade900, fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -472,8 +496,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             subtitle: Padding(
                               padding: const EdgeInsets.only(top: 4.0),
                               child: Text(
-                                '${item.department}${item.refNumber != null ? ' • Ref: ${item.refNumber}' : ''}',
-                                style: const TextStyle(fontSize: 13, color: Colors.grey),
+                                '${item.department} • ID: ${item.trackId}${item.refNumber != null ? ' • Ref: ${item.refNumber}' : ''}',
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                             ),
                             trailing: Column(
@@ -515,6 +539,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
         ],
+      ),
+    );
+  }
+
+  Widget _metricCard(String title, String count, Color color, bool isDark) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCard : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              count,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 11, color: isDark ? Colors.white70 : Colors.black54, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
       ),
     );
   }
