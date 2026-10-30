@@ -25,6 +25,7 @@ class Scribe {
   final String duration;
   final String level;
   final String overviewDescription;
+  final String? officialPortalUrl;
   final List<ScribeStep> steps;
 
   const Scribe({
@@ -36,11 +37,12 @@ class Scribe {
     required this.duration,
     required this.level,
     required this.overviewDescription,
+    this.officialPortalUrl,
     required this.steps,
   });
 }
 
-// Sample Data for all Scribes
+// Sample Data for all Scribes with verified official government portal URLs
 final sampleScribes = [
   // 1. Aadhaar Enrolment
   Scribe(
@@ -53,6 +55,7 @@ final sampleScribes = [
     level: 'Beginner',
     overviewDescription:
         'A screen-by-screen walkthrough of the real portal, so you know exactly what to click before you sit down to actually apply.',
+    officialPortalUrl: 'https://uidai.gov.in',
     steps: const [
       ScribeStep(
         stepNumber: 1,
@@ -111,6 +114,7 @@ final sampleScribes = [
     level: 'Beginner',
     overviewDescription:
         'A screen-by-screen walkthrough of the real portal, so you know exactly what to click before you sit down to actually apply.',
+    officialPortalUrl: 'https://www.onlineservices.tin.egov-nsdl.com',
     steps: const [
       ScribeStep(
         stepNumber: 1,
@@ -183,6 +187,7 @@ final sampleScribes = [
     level: 'Beginner',
     overviewDescription:
         'A screen-by-screen walkthrough of the real portal, so you know exactly what to click before you sit down to actually apply.',
+    officialPortalUrl: 'https://voters.eci.gov.in',
     steps: const [
       ScribeStep(
         stepNumber: 1,
@@ -268,6 +273,7 @@ final sampleScribes = [
     level: 'Intermediate',
     overviewDescription:
         'A screen-by-screen walkthrough of the real portal, so you know exactly what to click before you sit down to actually apply.',
+    officialPortalUrl: 'https://parivahan.gov.in',
     steps: const [
       ScribeStep(
         stepNumber: 1,

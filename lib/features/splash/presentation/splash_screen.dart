@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../core/session/session_manager.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../auth/presentation/login_screen.dart';
+import '../../home/presentation/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,20 +32,31 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _animationController.forward();
 
-    // Automatically transition to the Login Screen after ~1 second
-    Timer(const Duration(milliseconds: 1200), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 300),
-        ),
-      );
-    });
+    _startSplashSequence();
+  }
+
+  Future<void> _startSplashSequence() async {
+    // Initialize session & timer in parallel
+    final sessionInit = SessionManager.instance.initSession();
+    final delay = Future.delayed(const Duration(milliseconds: 1000));
+
+    await Future.wait([sessionInit, delay]);
+
+    if (!mounted) return;
+
+    final targetWidget = SessionManager.instance.isLoggedIn
+        ? const HomeScreen()
+        : const LoginScreen();
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+      ),
+    );
   }
 
   @override
@@ -69,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   height: 180,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(32),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 24,

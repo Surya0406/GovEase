@@ -13,13 +13,16 @@ class MainActivity : FlutterActivity(), TextToSpeech.OnInitListener {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        tts = TextToSpeech(this, this)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "speak" -> {
                     val text = call.argument<String>("text") ?: ""
                     val lang = call.argument<String>("lang") ?: "en-IN"
+
+                    if (tts == null) {
+                        tts = TextToSpeech(applicationContext, this)
+                    }
 
                     if (isTtsReady && text.isNotEmpty()) {
                         val locale = when (lang) {
@@ -36,7 +39,9 @@ class MainActivity : FlutterActivity(), TextToSpeech.OnInitListener {
                     }
                 }
                 "stop" -> {
-                    tts?.stop()
+                    try {
+                        tts?.stop()
+                    } catch (_: Exception) {}
                     result.success(true)
                 }
                 else -> result.notImplemented()
@@ -51,8 +56,10 @@ class MainActivity : FlutterActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onDestroy() {
-        tts?.stop()
-        tts?.shutdown()
+        try {
+            tts?.stop()
+            tts?.shutdown()
+        } catch (_: Exception) {}
         super.onDestroy()
     }
 }

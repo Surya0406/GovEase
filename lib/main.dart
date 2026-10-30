@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'core/session/session_manager.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/splash/presentation/splash_screen.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await SessionManager.instance.initSession();
   runApp(const MyApp());
 }
 
